@@ -26,24 +26,26 @@ def uploader():
         try:
             filename = file.filename
             destination_path = os.path.join(config.exports['targetFolder'], filename)
-            fileSize = len(file.read())
+            file.seek(0, 2)
+            fileSize = file.tell()
+            file.seek(0)
             print(fileSize)
-            # if fileSize <= max_chunk:
-            print('hello')
-            dbx.files_upload(file.read(), destination_path)
-            print('done')
-            # else:
-            #     upload_session_start_result = dbx.files_upload_session_start(file.stream.read(chunk_size))
-            #     cursor = dropbox.files.UploadSessionCursor(session_id=upload_session_start_result.session_id,
-            #                                                offset=file.stream.read.tell())
-            #     commit = dropbox.files.CommitInfo(path=config.exports['targetFolder'])
-            #
-            #     while file.stream.read.tell() < fileSize:
-            #         if (fileSize - file.stream.read.tell()) <= chunk_size:
-            #             print(dbx.files_upload_session_finish(file.read(chunk_size), cursor, commit))
-            #         else:
-            #             dbx.files_upload_session_append_v2(file.stream.read(chunk_size), cursor)
-            #             cursor.offset = file.stream.tell()
+            if fileSize <= max_chunk:
+                print('hello')
+                dbx.files_upload(file.read(), destination_path)
+                print('done')
+            else:
+                upload_session_start_result = dbx.files_upload_session_start(file.stream.read(chunk_size))
+                cursor = dropbox.files.UploadSessionCursor(session_id=upload_session_start_result.session_id,
+                                                           offset=file.stream.read.tell())
+                commit = dropbox.files.CommitInfo(path=config.exports['targetFolder'])
+
+                while file.stream.read.tell() < fileSize:
+                    if (fileSize - file.stream.read.tell()) <= chunk_size:
+                        print(dbx.files_upload_session_finish(file.read(chunk_size), cursor, commit))
+                    else:
+                        dbx.files_upload_session_append_v2(file.stream.read(chunk_size), cursor)
+                        cursor.offset = file.stream.tell()
         except Exception as err:
             print("Failed to upload {}\n{}".format(file, err))
     print("Finished upload.")

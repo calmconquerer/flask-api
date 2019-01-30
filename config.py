@@ -1,4 +1,4 @@
 exports = {'targetFolder': '/target/',
-           'token': 'WsjCWzEV2oAAAAAAAAABn_Vkd67j-hpXvA3OZUGVe4Ld2PKdfaBUId-crRZN383I',
+           'token': 'Enter the access token here',
            'chunkSize': 1,
            'maxChunk': 2}
