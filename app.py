@@ -56,7 +56,6 @@ def uploader():
             if fileSize <= max_chunk:
                 dbx.files_upload(file.read(), destination_path)
             else:
-                print('hello')
                 upload_session_start_result = dbx.files_upload_session_start(file.read(chunk_size))
                 cursor = dropbox.files.UploadSessionCursor(session_id=upload_session_start_result.session_id,
                                                            offset=file.tell())
